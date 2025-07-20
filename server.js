@@ -1,39 +1,40 @@
+// server.js
 const express = require('express');
-const http = require('http');
-const { Server } = require('socket.io');
-
 const app = express();
-const server = http.createServer(app);
-const io = new Server(server, {
-    cors: {
-        origin: "*", // Allows connections from any origin (good for development)
-        methods: ["GET", "POST"]
-    }
-});
+const http = require('http').Server(app);
+const io = require('socket.io')(http); // Initialize Socket.IO with the HTTP server
 
-// Serve a simple HTML file for testing
+// Serve static files from the 'public' directory
+// This line makes all files inside the 'public' folder accessible via the web server.
+// For example, http://localhost:3000/index.html, http://localhost:3000/style.css, etc.
+app.use(express.static('public'));
+
+// Define the root route. When someone accesses http://localhost:3000/,
+// Express.static('public') will automatically serve 'public/index.html' if it exists.
+// We can explicitly send it for clarity or if there's no default index file.
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/index.html'); // Will create this in a moment
+  res.sendFile(__dirname + '/public/index.html');
 });
 
-// Socket.IO connection logic
+// Socket.IO connection handling
 io.on('connection', (socket) => {
-    console.log('A user connected:', socket.id);
+  console.log('A user connected');
 
-    // When a message is received from a client
-    socket.on('chat message', (msg) => {
-        console.log('Message received:', msg);
-        // Broadcast the message to all connected clients
-        io.emit('chat message', msg);
-    });
+  // Listen for 'message' events from the client (from public/script.js)
+  socket.on('message', (data) => {
+    console.log('Message received: ' + data);
+    // Broadcast the received message to ALL connected clients
+    io.emit('message', data);
+  });
 
-    // When a client disconnects
-    socket.on('disconnect', () => {
-        console.log('User disconnected:', socket.id);
-    });
+  // Handle client disconnections
+  socket.on('disconnect', () => {
+    console.log('User disconnected');
+  });
 });
 
+// Start the server
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+http.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
