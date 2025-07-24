@@ -1,9 +1,3 @@
-Got it, Mohammed\! You've successfully hit the MVP, which is a huge win given the time constraints. A clear README is essential for anyone (including future you\!) revisiting the project.
-
-Here's a README you can copy-paste for your Real-Time Chat App. It highlights the MVP, acknowledges the team effort, and sets the stage for future development.
-
------
-
 # Proxenix Real-Time Chat App
 
 This repository contains the Minimum Viable Product (MVP) for a real-time chat application developed as part of the Proxenix Internship program. The primary goal of this initial sprint was to establish core real-time messaging functionality using Socket.IO, HTML, and CSS, demonstrating foundational web development skills.
